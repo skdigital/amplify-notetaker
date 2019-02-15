@@ -23,9 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 
 #amplify
-amplify
-.amplifyrc
-.graphqlconfig.yml
 amplify/\#current-cloud-backend
 amplify/.config/local-*
 amplify/backend/amplify-meta.json
