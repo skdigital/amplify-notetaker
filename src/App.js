@@ -32,8 +32,7 @@ class App extends Component {
     event.preventDefault();
     // check if note already exists, if so update
     if (this.hasExistingNote()) {
-      this.handleUpdateNote();
-      console.log('note updated');
+      this.updateNote();
     } else {
       const { note, notes } = this.state;
       const input = { note };
@@ -48,18 +47,22 @@ class App extends Component {
     this.setState({ note, id });
   };
 
-  handleUpdateNote = async () => {
-    const { notes, id, note } = this.state;
-    const input = { note, id };
-    const result = await API.graphql(graphqlOperation(updateNote, { input }));
-    const updatedNote = result.data.updatedNote;
-    const index = notes.findIndex(note => note.id === updatedNote.id);
-    const updatedNotes = [
-      ...notes.slice(0, index),
-      updatedNote,
-      ...notes.slice(index + 1)
-    ];
-    this.setState({ notes: updatedNotes, note: '', id: '' });
+  updateNote = async () => {
+    const { note, id } = this.state;
+    const res = await API.graphql(
+      graphqlOperation(updateNote, { input: { note, id } })
+    );
+    const updatedNote = res.data.updateNote;
+    const noteIndex = this.state.notes.findIndex(n => n.id === updatedNote.id);
+    if (noteIndex === -1) return;
+
+    const notes = [...this.state.notes];
+    notes[noteIndex] = updatedNote;
+    this.setState({
+      notes,
+      note: '',
+      id: null
+    });
   };
 
   handleDeleteNote = async noteId => {
